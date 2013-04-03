@@ -4,7 +4,7 @@ A simple benchmark running library
 
 Goals:
 - Simplify creating basic benchmarks
-- Provide consistent results structure (first)
+- Provide consistent results structure
 - Provide extendable results structure (later)
 - Figure out how to enable publishing results to a server (ala Dart Performance)
 - Compose suites of benchmarks

@@ -5,5 +5,5 @@ class RunResult {
   final int duration; // ms
   final Iterable<int> snapshots;
 
-  const RunResult(this.iterations, this.duration, this.snapshots);
+  const RunResult(this.iterations, this.duration, {this.snapshots});
 }
