@@ -1,0 +1,8 @@
+name: dmark
+version: 0.0.1
+author: Perry Birch
+description: A sample web application
+dependencies:
+  dfunct: any
+dev_dependencies:
+  unittest: any
