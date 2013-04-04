@@ -8,3 +8,4 @@ part 'src/suite_result.dart';
 part 'src/run_settings.dart';
 part 'src/runner.dart';
 part 'src/suite.dart';
+part 'src/writer.dart';

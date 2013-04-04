@@ -12,7 +12,10 @@ suite_tests() {
         executions++;
       };
       var suite = Suite.using('title', settings,
-          benchmarks: [benchmark, benchmark]);
+          benchmarks: {
+            'first': benchmark,
+            'second': benchmark
+          });
 
       // Act
       suite.exec();
@@ -56,7 +59,9 @@ suite_tests() {
           suiteTeardown: suiteTeardown,
           setup: setup,
           teardown: teardown,
-          benchmarks: [benchmark]);
+          benchmarks: {
+            'first': benchmark
+          });
 
       // Act
       suite.exec();

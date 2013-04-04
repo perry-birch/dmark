@@ -1,7 +1,9 @@
 name: dmark
 version: 0.0.1
 author: Perry Birch
-description: A sample web application
+description: A benchmark library for dart.
+homepage: https://github.com/Vizidrix/dmark
+documentation: https://github.com/Vizidrix/dmark/tree/master/doc
 dependencies:
   dfunct: any
 dev_dependencies:

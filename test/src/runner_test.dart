@@ -14,10 +14,43 @@ runner_tests() {
       };
 
       // Act
-      runner.exec(benchmark);
+      runner.exec('benchmark', benchmark);
 
       // Assert
-      expect(executions, count); // Should have executed 'count' times
+      expect(executions, count);
+    });
+
+    test('have correct run and warmup iterations', () {
+      // Arrange
+      var count = 1;
+      var warmupCount = 10;
+      var settings = RunSettings.byIterations(count, warmupCount);
+      var runner = Runner.using(settings);
+
+      // Act
+      var result = runner.exec('benchmark', () { });
+
+      // Assert
+      expect(result.runIterations, count);
+      expect(result.warmupIterations, warmupCount);
+    });
+
+    test('run warmup iterations as well as runs', () {
+      // Arrange
+      var count = 10;
+      var warmupCount = 3;
+      var settings = RunSettings.byIterations(count, warmupCount);
+      var runner = Runner.using(settings);
+      var executions = 0;
+      var benchmark = () {
+        executions++;
+      };
+
+      // Act
+      var result = runner.exec('benchmark', benchmark);
+
+      // Assert
+      expect(executions, count + warmupCount);
     });
 
     test('execute stand alone run by iteration with multiple benchmarks', () {
@@ -31,8 +64,8 @@ runner_tests() {
       };
 
       // Act
-      runner.exec(benchmark);
-      runner.exec(benchmark);
+      runner.exec('benchmark', benchmark);
+      runner.exec('benchmark', benchmark);
 
       // Assert
       expect(executions, count * 2);
@@ -60,8 +93,8 @@ runner_tests() {
           teardown: teardown);
 
       // Act
-      runner.exec(benchmark);
-      runner.exec(benchmark);
+      runner.exec('benchmark', benchmark);
+      runner.exec('benchmark', benchmark);
 
       // Assert
       expect(executions, count * 2);

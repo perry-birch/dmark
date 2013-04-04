@@ -1,12 +1,14 @@
 part of dmark;
 
 class Runner {
-  final Func1<Action, RunResult> _runner;
+  // Should be something like:
+  // Func2<Action, [String], RunResult>
+  final dynamic _runner;
 
   const Runner._(this._runner);
 
-  RunResult exec(Action benchmark) {
-    return _runner(benchmark);
+  RunResult exec(String title, Action benchmark) {
+    return _runner(title, benchmark);
   }
 
   static final Func<Runner> usingDefault = () {
@@ -32,47 +34,70 @@ class Runner {
     }
   };
 
-  static final dynamic _withIterations = (int warmupCount, int runCount, Action setup, Action teardown) {
-    return (Action benchmark) {
-      int index = 0;
-      for(index; index < warmupCount; index++) {
+  static final dynamic _withIterations = (int runIterations, int warmupIterations, Action setup, Action teardown) {
+    return (String title, Action benchmark) {
+      if(title == null) { title = "N/A"; }
+      int runStart = 0;
+      int warmupEnd = 0;
+      int runEnd = 0;
+      List<int> snapshotStarts = new List<int>();
+      List<int> snapshotEnds = new List<int>();
+
+      Stopwatch watch = new Stopwatch();
+      watch.start();
+      runStart = watch.elapsedMicroseconds;
+      for(var i = 0; i < warmupIterations; i++) {
         setup();
         benchmark();
         teardown();
       }
-      index = 0;
-      Stopwatch watch = new Stopwatch()..start();
-      for(index; index < runCount; index++) {
+      warmupEnd = watch.elapsedMicroseconds;
+      for(var i = 0; i < runIterations; i++) {
         setup();
+        snapshotStarts.add(watch.elapsedMicroseconds);
         benchmark();
+        snapshotEnds.add(watch.elapsedMicroseconds);
         teardown();
       }
-      var elapsedTime = watch.elapsedMicroseconds;
-      return new RunResult(runCount, elapsedTime);
+      runEnd = watch.elapsedMicroseconds;
+      watch.stop();
+      return new RunResult(title, runStart, warmupEnd, runEnd, runIterations, warmupIterations, snapshotStarts, snapshotEnds);
     };
   };
 
-  static final dynamic _withDuration = (int warmupDuration, int runDuration, Action setup, Action teardown) {
-    return (Action benchmark) {
+  static final dynamic _withDuration = (int runDuration, int warmupDuration, Action setup, Action teardown) {
+    return (String title, Action benchmark) {
+      if(title == null) { title = "N/A"; }
+      int runStart = 0;
+      int warmupEnd = 0;
+      int runEnd = 0;
+      List<int> snapshotStarts = new List<int>();
+      List<int> snapshotEnds = new List<int>();
+      int runIterations = 0;
+      int warmupIterations = 0;
+
       Stopwatch watch = new Stopwatch();
       watch.start();
-      while(watch.elapsedMicroseconds < warmupDuration.inMicroseconds) {
+      runStart = watch.elapsedMicroseconds;
+      while(watch.elapsedMicroseconds < warmupDuration) {
         setup();
         benchmark();
         teardown();
+        warmupIterations++;
       }
-      watch.reset();
-      int elapsedTime = 0;
-      int iterations = 0;
-      watch.start();
-      while(elapsedTime < duration.inMicroseconds) {
+      warmupEnd = watch.elapsedMicroseconds;
+      int runTerminate = runDuration + watch.elapsedMicroseconds;
+      while(watch.elapsedMicroseconds < runTerminate) {
         setup();
+        snapshotStarts.add(watch.elapsedMicroseconds);
         benchmark();
+        snapshotEnds.add(watch.elapsedMicroseconds);
         teardown();
-        elapsedTime = watch.elapsedMicroseconds;
-        iterations++;
+        runIterations++;
       }
-      return new RunResult(iterations, elapsedTime);
+      runEnd = watch.elapsedMicroseconds;
+      watch.stop();
+      return new RunResult(title, runStart, warmupEnd, runEnd, runIterations, warmupIterations, snapshotStarts, snapshotEnds);
     };
   };
 }

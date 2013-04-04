@@ -12,7 +12,7 @@ class Suite {
   final Action _suiteTeardown;
   final Action _setup;
   final Action _teardown;
-  final List<Action> _benchmarks;
+  final Map<String, Action> _benchmarks;
 
   const Suite._(
       this._title,
@@ -27,9 +27,9 @@ class Suite {
   int get benchmarkCount  => _benchmarks.length;
 
   Iterable<RunResult> exec() {
-    var results = _benchmarks.map((benchmark) {
+    var results = _benchmarks.keys.map((title) {
       _suiteSetup();
-      var result = _runner.exec(benchmark);
+      var result = _runner.exec(title, _benchmarks[title]);
       _suiteTeardown();
       return result;
     }).toList();
@@ -44,7 +44,7 @@ class Suite {
       Action suiteTeardown,
       Action setup,
       Action teardown,
-      List<Action> benchmarks
+      Map<String, Action> benchmarks
       }) {
     if(settings == null) { throw 'RunSettings cannot be null'; }
     if(suiteSetup == null) { suiteSetup = () { }; }
@@ -72,6 +72,16 @@ return pow(Math.E, _.reduce(sample, function(sum, x) {
 return sum + log(x);
 }) / sample.length) || 0;
 }
+
+// Computes the geometric mean of a set of numbers.
+BenchmarkSuite.GeometricMean = function(numbers) {
+  var log = 0;
+  for (var i = 0; i < numbers.length; i++) {
+    log += Math.log(numbers[i]);
+  }
+  return Math.pow(Math.E, log / numbers.length);
+}
+
 
 
 
