@@ -1,5 +1,5 @@
 name: dmark
-version: 0.0.1
+version: 0.0.2
 author: Vizidrix <admin@vizidrix.com>
 description: A benchmark library for dart.
 homepage: https://github.com/Vizidrix/dmark

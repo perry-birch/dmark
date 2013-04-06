@@ -40,6 +40,8 @@ class Runner {
       int runStart = 0;
       int warmupEnd = 0;
       int runEnd = 0;
+      int iterationStart = 0;
+      int iterationEnd = 0;
       List<int> snapshotStarts = new List<int>();
       List<int> snapshotEnds = new List<int>();
 
@@ -54,10 +56,12 @@ class Runner {
       warmupEnd = watch.elapsedMicroseconds;
       for(var i = 0; i < runIterations; i++) {
         setup();
-        snapshotStarts.add(watch.elapsedMicroseconds);
+        iterationStart = watch.elapsedMicroseconds;
         benchmark();
-        snapshotEnds.add(watch.elapsedMicroseconds);
+        iterationEnd = watch.elapsedMicroseconds;
         teardown();
+        snapshotStarts.add(iterationStart);
+        snapshotEnds.add(iterationEnd);
       }
       runEnd = watch.elapsedMicroseconds;
       watch.stop();
@@ -71,9 +75,12 @@ class Runner {
       int runStart = 0;
       int warmupEnd = 0;
       int runEnd = 0;
+      int iterationStart = 0;
+      int iterationEnd = 0;
       List<int> snapshotStarts = new List<int>();
       List<int> snapshotEnds = new List<int>();
       int runIterations = 0;
+      int actualDuration = 0;
       int warmupIterations = 0;
 
       Stopwatch watch = new Stopwatch();
@@ -87,12 +94,15 @@ class Runner {
       }
       warmupEnd = watch.elapsedMicroseconds;
       int runTerminate = runDuration + watch.elapsedMicroseconds;
-      while(watch.elapsedMicroseconds < runTerminate) {
+      while(actualDuration < runDuration) {
         setup();
-        snapshotStarts.add(watch.elapsedMicroseconds);
+        iterationStart = watch.elapsedMicroseconds;
         benchmark();
-        snapshotEnds.add(watch.elapsedMicroseconds);
+        iterationEnd = watch.elapsedMicroseconds;
         teardown();
+        snapshotStarts.add(iterationStart);
+        snapshotEnds.add(iterationEnd);
+        actualDuration += (iterationEnd - iterationStart);
         runIterations++;
       }
       runEnd = watch.elapsedMicroseconds;
