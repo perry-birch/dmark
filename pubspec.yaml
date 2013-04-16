@@ -7,4 +7,4 @@ documentation: https://github.com/Vizidrix/dmark/tree/master/doc
 dependencies:
   dfunct: '>=0.0.8'
 dev_dependencies:
-  unittest: any
+  unittest: '>=0.4.7 <0.5.0'

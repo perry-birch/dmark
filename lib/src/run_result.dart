@@ -48,7 +48,7 @@ class RunResult {
     for(var index = 0; index < snapshotStarts.length; index++) {
       snapshots.add(snapshotEnds.elementAt(index) - snapshotStarts.elementAt(index));
     }
-    var snapshotsDuration = snapshots.reduce(0, (acc, val) => acc + val);
+    var snapshotsDuration = snapshots.fold(0, (acc, val) => acc + val);
     var map = new Map();
     map[_TIMESTAMP] = new DateTime.now();
     map[_TITLE] = title;
